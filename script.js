@@ -1,3 +1,4 @@
+// Possiveis caracteres
 caracteres = [
   [
     "a",
@@ -89,22 +90,27 @@ caracteres = [
   ],
 ];
 
+// Seletores
+const button = window.document.querySelector("#gerador");
+const numeroDigitado = window.document.querySelector("#caracteres");
+const paragrafo = window.document.querySelector(".senha");
+console.log(button, numeroDigitado, paragrafo);
+
 // Criando um numero aleatório de zero até o "max"
 const NumeroAleatorio = (max) => {
   return Math.floor(Math.random() * (max + 1));
 };
 
-//Embaralhando senha
-const EmbaralhaArray = (array) => {
-  const arrayEmbaralhado = [];
-  for (let i = 0; arrayEmbaralhado.length < array.length; i += 1) {
-    let index = NumeroAleatorio(array.length - 1);
-    if (!arrayEmbaralhado.includes(array[index])) {
-      arrayEmbaralhado.push(array[index]);
-    }
+//Embaralhando senha - Referência https://mail.horadecodar.com.br/como-embaralhar-um-array-em-javascript-shuffle/
+
+function EmbaralhaArray(array) {
+  for (let i = array.length - 1; i > 0; i -= 1) {
+    const newIndex = NumeroAleatorio(array.length - 1);
+    [array[i], array[newIndex]] = [array[newIndex], array[i]];
   }
-  return arrayEmbaralhado;
-};
+
+  return array;
+}
 
 //Criando Senha
 const generatePassword = (size) => {
@@ -129,6 +135,21 @@ const generatePassword = (size) => {
 
   return senhaFormatada;
 };
-console.log(generatePassword(10));
 
-//const showPassword = (size) => {};
+//Adicionando Senha ao HTML
+const showPassword = (size, campo) => {
+  if (size < 8 || size > 20) {
+    campo.innerHTML = "A senha deve ter no mínimo 8 caracteres e no máximo 20.";
+    campo.style.color = "red";
+  } else {
+    const senha = generatePassword(size);
+    campo.innerHTML = senha;
+    campo.style.color = "black";
+  }
+  numeroDigitado.focus();
+};
+
+//Adicionando Events
+button.addEventListener("click", () => {
+  showPassword(numeroDigitado.value, paragrafo);
+});
